@@ -467,29 +467,3 @@ def unsupervised_HMM(X, n_states, N_iters, seed=None):
     HMM.unsupervised_learning(X, N_iters)
 
     return HMM
-
-def states_to_wordclouds(hmm, obs_map_r, max_words=50, show=True):
-    # Initialize.
-    M = 100000
-    n_states = len(hmm.A)
-    wordclouds = []
-
-    # Generate a large emission.
-    emission, states = hmm.generate_emission(M)
-
-    # For each state, get a list of observations that have been emitted
-    # from that state.
-    obs_count = []
-    for i in range(n_states):
-        obs_lst = np.array(emission)[np.where(np.array(states) == i)[0]]
-        obs_count.append(obs_lst)
-
-    # For each state, convert it into a wordcloud.
-    for i in range(n_states):
-        obs_lst = obs_count[i]
-        sentence = [obs_map_r[j] for j in obs_lst]
-        sentence_str = ' '.join(sentence)
-
-        wordclouds.append(text_to_wordcloud(sentence_str, max_words=max_words, title='State %d' % i, show=show))
-
-    return wordclouds
