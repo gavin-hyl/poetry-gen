@@ -66,7 +66,29 @@ def parse_syllable_dict(filename='syllable_dict.txt'):
         text = file.read().splitlines()
     for line in text:
         tokens = line.split(' ')
-        syllable_dict.update({tokens[0] : [int(t[1] if len(t) > 1 else t) for t in tokens[1:]]})
+        reg_syllables = [int(e) for e in filter(lambda x: len(x) == 1, tokens[1:])]
+        end_syllables = [int(e[1]) for e in list(filter(lambda x: len(x) > 1, tokens[1:]))]
+        syllable_dict.update({tokens[0] : (reg_syllables, end_syllables)})
     return syllable_dict
+
+def line_syllable_count(line, syllable_dict):
+    '''
+    Returns a list of the possible syllable counts for this line.
+    '''
+    line.reverse()
+    possible_syllables = syllable_dict.get(line[0])[0] + syllable_dict.get(line[0])[1]
+    for word in line[1:]:
+        new_possibilities = []
+        try:
+            new_syllables = syllable_dict.get(word)[0]
+        except TypeError:
+            new_syllables = [2] # quick fix
+        for syl in new_syllables:
+            for prev_total in possible_syllables:
+                new_possibilities.append(syl + prev_total)
+        possible_syllables = new_possibilities
+    return possible_syllables
+
 print(parse_syllable_dict())
+print(line_syllable_count(['believed', 'believed'], parse_syllable_dict()))
 # parse_syllable_dict()
