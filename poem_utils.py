@@ -24,30 +24,30 @@ def separate_words(poems: list[str]):
     '''
     # hyphens and apostrophes treated as joining two parts of a word
     # and punctuation ,.?!:; are treated as separated tokens
-    pattern = r'([\w\'-]+\b|[,.?!:;])'
+    pattern = r'([\w\'-]+\b)'
     all_words = []
     for poem in poems:
         lines = poem.splitlines()
         words = []
         for idx, line in enumerate(lines):
-            words.append(re.findall(pattern, line) + ['\n'])
+            words.append(re.findall(pattern, line))
         all_words.append(words)
     return all_words
 
 def word_idx_mappings(words: list[list[list[str]]]):
     '''
-    Returns the word to index mapping and the index to word mapping (including END)
+    Returns the word to index mapping and the index to word mapping
     '''
     word_to_idx = {}
     idx = 0
     for poem in words:
         for line in poem:
             for word in line:
-                if word_to_idx.get(word) is None:
-                    word_to_idx.update({word: idx})
+                if word_to_idx.get(word.lower()) is None:
+                    word_to_idx.update({word.lower(): idx})
                     idx += 1
     idx_to_word = {v: k for k, v in word_to_idx.items()}
-    print(f'Number of unique observations (including punctuation and newline): {len(word_to_idx)}')
+    print(f'Number of unique observations: {len(word_to_idx)}')
     return word_to_idx, idx_to_word
 
 def numerize_words(words, word_to_idx: dict):
@@ -76,7 +76,10 @@ def line_syllable_count(line, syllable_dict):
     Returns a list of the possible syllable counts for this line.
     '''
     line.reverse()
-    possible_syllables = syllable_dict.get(line[0])[0] + syllable_dict.get(line[0])[1]
+    try:
+        possible_syllables = syllable_dict.get(line[0])[0] + syllable_dict.get(line[0])[1]
+    except:
+        possible_syllables = [2]
     for word in line[1:]:
         new_possibilities = []
         try:
