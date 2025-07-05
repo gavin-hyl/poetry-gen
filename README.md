@@ -2,6 +2,8 @@
 
 A multi-approach machine learning project for generating poetry using Hidden Markov Models and Recurrent Neural Networks, trained on Shakespeare and Spenser texts.
 
+Final grade: A+
+
 ## Overview
 
 This project explores different machine learning techniques for poetry generation and analysis. Using classical works from Shakespeare and Edmund Spenser, we implement both probabilistic (HMM) and neural network (RNN/LSTM) approaches to understand and generate poetry with proper meter, rhyme, and style.
